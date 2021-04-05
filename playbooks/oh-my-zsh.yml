@@ -1,0 +1,7 @@
+- hosts: "*"
+  roles:
+    - role: gantsign.oh-my-zsh
+      users:
+        - username: kube
+#      users:
+#        - username: serveradmin

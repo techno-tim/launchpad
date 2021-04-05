@@ -1,0 +1,9 @@
+- hosts: "*"
+  become: yes
+  tasks:
+    - name: Extend the logical volume to take all remaining space of the PVs and resize the underlying filesystem
+      community.general.lvol:
+        vg: ubuntu-vg
+        lv: ubuntu-lv
+        size: +100%FREE
+        resizefs: true

@@ -1,0 +1,8 @@
+- hosts: "*"
+  roles:
+    - role: gantsign.oh-my-zsh
+      users:
+        - username: kube ## Username of the account you'd like to install Oh-My-Zsh to. Use "ansible-galaxy install gantsign.oh-my-zsh" first.
+                         ## https://galaxy.ansible.com/gantsign/oh-my-zsh  
+#      users:
+#        - username: serveradmin

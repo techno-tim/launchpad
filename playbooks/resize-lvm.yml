@@ -1,0 +1,11 @@
+- hosts: "*"
+  become: yes
+  tasks:
+      ## Install Ansible Galaxy community collection first. "ansible-galaxy collection install community.general"
+      ## https://galaxy.ansible.com/community/general
+    - name: Extend the logical volume to take all remaining space of the PVs and resize the underlying filesystem
+      community.general.lvol:
+        vg: ubuntu-vg
+        lv: ubuntu-lv
+        size: +100%FREE
+        resizefs: true

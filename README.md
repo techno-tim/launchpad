@@ -2,7 +2,7 @@
 
 ## Info
 
-A collection of quick starters for ansible, kubernetes, docker, linux, windows, and more.  Great for HomeLbas, learning, and automation!
+A collection of quick starters for ansible, kubernetes, docker, linux, windows, and more.  Great for HomeLabs, learning, and automation!
 
 Don't forget to ⭐  this repo and fork it too! 👆
 

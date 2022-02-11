@@ -2,7 +2,7 @@
 
 ## Info
 
-A collection of quickr starters for ansible, kubernetes, docker, linux, windows, and more
+A collection of quick starters for ansible, kubernetes, docker, linux, windows, and more.  Great for learning and automation!
 
 Don't forget to ⭐  this repo and fork it too! 👆
 

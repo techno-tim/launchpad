@@ -1,0 +1,26 @@
+api:
+  dashboard: true
+  debug: true
+entryPoints:
+  http:
+    address: ":80"
+  https:
+    address: ":443"
+serversTransport:
+  insecureSkipVerify: true
+providers:
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+    exposedByDefault: false
+  file:
+    filename: /config.yml
+certificatesResolvers:
+  cloudflare:
+    acme:
+      email: you@example.com
+      storage: acme.json
+      dnsChallenge:
+        provider: cloudflare
+        resolvers:
+          - "1.1.1.1:53"
+          - "1.0.0.1:53"

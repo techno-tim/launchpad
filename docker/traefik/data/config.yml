@@ -1,0 +1,198 @@
+http:
+ #region routers 
+  routers:
+    proxmox:
+      entryPoints:
+        - "https"
+      rule: "Host(`proxmox.local.example.com`)"
+      middlewares:
+        - default-headers
+      tls: {}
+      service: proxmox
+    pihole:
+      entryPoints:
+        - "https"
+      rule: "Host(`pihole.local.example.com`)"
+      middlewares:
+        - default-headers
+        - addprefix-pihole
+      tls: {}
+      service: pihole
+    homebridge:
+      entryPoints:
+        - "https"
+      rule: "Host(`homebridge.local.example.com`)"
+      middlewares:
+        - default-headers
+      tls: {}
+      service: homebridge
+    syncthing:
+      entryPoints:
+        - "https"
+      rule: "Host(`syncthing.local.example.com`)"
+      middlewares:
+        - default-headers
+      tls: {}
+      service: syncthing
+    truenas:
+      entryPoints:
+        - "https"
+      rule: "Host(`truenas.local.example.com`)"
+      middlewares:
+        - default-headers
+      tls: {}
+      service: truenas
+    plex:
+      entryPoints:
+        - "https"
+      rule: "Host(`plex.local.example.com`)"
+      middlewares:
+        - default-headers
+      tls: {}
+      service: plex
+    minio:
+      entryPoints:
+        - "https"
+      rule: "Host(`minio.local.example.com`)"
+      middlewares:
+        - default-headers
+      tls: {}
+      service: minio
+    rancher:
+      entryPoints:
+        - "https"
+      rule: "Host(`rancher.local.example.com`)"
+      middlewares:
+        - default-headers
+      tls: {}
+      service: rancher
+    idrac:
+      entryPoints:
+        - "https"
+      rule: "Host(`idrac.local.example.com`)"
+      middlewares:
+        - idrac
+      tls: {}
+      service: idrac
+    idrac-console:
+      entryPoints:
+        - "idrac" # REQUIRED for iDRAC virtual console: Create a new TCP entry point in traefik on port 5900
+      rule: "Host(`idrac.local.example.com`)"
+      middlewares:
+        - idrac
+      tls: {}
+      service: idrac-console
+    opnsense:
+      entryPoints:
+        - "https"
+      rule: "Host(`opnsense.local.example.com`)"
+      middlewares:
+        - default-headers
+      tls: {}
+   
+
+#endregion
+#region services
+  services:
+    proxmox:
+      loadBalancer:
+        servers:
+          - url: "https://192.168.0.100:8006"
+        passHostHeader: true
+    pihole:
+      loadBalancer:
+        servers:
+          - url: "http://192.168.0.101:80"
+        passHostHeader: true
+    homebridge:
+      loadBalancer:
+        servers:
+          - url: "http://192.168.0.102:10999"
+        passHostHeader: true
+    syncthing:
+      loadBalancer:
+        servers:
+          - url: "https://192.168.0.103:8384"
+        passHostHeader: true
+    truenas:
+      loadBalancer:
+        servers:
+          - url: "https://192.168.0.104"
+        passHostHeader: true
+    plex:
+      loadBalancer:
+        servers:
+          - url: "https://192.168.0.105:32400"
+        passHostHeader: true
+    minio:
+      loadBalancer:
+        servers:
+          - url: "https://192.168.0.106:9000/"
+        passHostHeader: true
+    rancher:
+      loadBalancer:
+        servers:
+          - url: "https://192.168.0.107"
+        passHostHeader: true
+    idrac:
+      loadBalancer:
+        servers:
+          - url: "https://192.168.0.108"
+        passHostHeader: true
+    idrac-console:
+      loadBalancer:
+        servers:
+          - url: "https://192.168.0.108:5900"
+        passHostHeader: true
+    opnsense:
+      loadBalancer:
+        servers:
+          - url: "https://192.168.0.109"
+        passHostHeader: true
+#endregion
+  middlewares:
+    addprefix-pihole:
+      addPrefix:
+        prefix: "/admin"
+    https-redirect:
+      redirectScheme:
+        scheme: https
+
+    default-headers:
+      headers:
+        frameDeny: true
+        sslRedirect: true
+        browserXssFilter: true
+        contentTypeNosniff: true
+        forceSTSHeader: true
+        stsIncludeSubdomains: true
+        stsPreload: true
+        stsSeconds: 15552000
+        customFrameOptionsValue: SAMEORIGIN
+        customRequestHeaders:
+          X-Forwarded-Proto: https
+
+    idrac:
+      headers:
+        frameDeny: true
+        sslRedirect: true
+        browserXssFilter: true
+        forceSTSHeader: true
+        stsIncludeSubdomains: true
+        stsSeconds: 15552000
+        customFrameOptionsValue: SAMEORIGIN
+        customRequestHeaders:
+          X-Forwarded-Proto: https
+
+    default-whitelist:
+      ipWhiteList:
+        sourceRange:
+        - "10.0.0.0/8"
+        - "192.168.0.0/16"
+        - "172.16.0.0/12"
+
+    secured:
+      chain:
+        middlewares:
+        - default-whitelist
+        - default-headers

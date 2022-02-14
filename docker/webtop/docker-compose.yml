@@ -1,0 +1,19 @@
+    version: "2.1"
+    services:
+      webtop:
+        image: ghcr.io/linuxserver/webtop:ubuntu-mate #choose your flavor
+        container_name: webtop
+        #privileged: true #optional but not needed unless you are running kde or i3 or other tools
+        environment:
+          - PUID=1000 # based on id
+          - PGID=1000 # based on group
+          - TZ=America/Chicago # your timezone
+        volumes:
+          - /home/user/webtop/config:/config #home directory
+          #- /var/run/docker.sock:/var/run/docker.sock #optional only if you need access to docker winthin this container
+        ports:
+          - 3000:3000
+        shm_size: "2gb" #optional but set to 1GB or higher to prevent browser crashes
+        restart: unless-stopped
+        # env_file:  #only necessary if you want to change the password, see .env file
+        #   - .env

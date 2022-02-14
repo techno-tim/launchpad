@@ -1,0 +1,12 @@
+version: "3.1"
+services:
+  guacamole:
+    image: maxwaldorf/guacamole #oznum is deprecated
+    container_name: guacamole
+    volumes:
+      - postgres:/config
+    ports:
+      - 8080:8080
+volumes:
+  postgres:
+    driver: local

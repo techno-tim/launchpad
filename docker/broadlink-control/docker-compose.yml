@@ -1,0 +1,14 @@
+---
+version: "3.1"
+services:
+  broadlink-control:
+    image: timothystewart6/techno-broadlink
+    container_name: librespeed
+    environment:
+      - HOST_IP=your.docker.host.ip
+    volumes:
+      - /path/to/config:/app/connfig
+    ports:
+      - 10981:10981
+    restart: unless-stopped
+    network_mode: host

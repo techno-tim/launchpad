@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: example-workload-deployment
+spec:
+  selector:
+    matchLabels:
+      app: example-workload
+  replicas: 1
+  progressDeadlineSeconds: 600
+  revisionHistoryLimit: 2
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: example-workload
+    spec:
+      containers:
+      - name: example-workload
+        image: registry.example.com
+        ports: 
+        - containerPort: 80

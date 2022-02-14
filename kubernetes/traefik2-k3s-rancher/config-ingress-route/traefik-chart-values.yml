@@ -1,0 +1,75 @@
+additionalArguments:
+  - --providers.file.filename=/data/traefik-config.yaml
+  - --entrypoints.websecure.http.tls.certresolver=cloudflare
+  - --entrypoints.websecure.http.tls.domains[0].main=example.com
+  - --entrypoints.websecure.http.tls.domains[0].sans=*.example.com
+  # - --certificatesresolvers.cloudflare.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
+  # comment above when going to production
+  - --certificatesresolvers.cloudflare.acme.dnschallenge.provider=cloudflare
+  - --certificatesresolvers.cloudflare.acme.email=email@example.com
+  - --certificatesresolvers.cloudflare.acme.dnschallenge.resolvers=1.1.1.1:53,8.8.8.8:53
+  - --certificatesresolvers.cloudflare.acme.storage=/certs/acme.json
+  - --serversTransport.insecureSkipVerify=true
+  # you will need to add an annotation to ingresses you create kubernetes.io/ingress.class traefik-external
+  # otherwise it will not servce those requests
+  - --providers.kubernetescrd.ingressclass=traefik-external
+  - --log.level=DEBUG
+
+deployment:
+  enabled: true
+  replicas: 1
+  annotations: {}
+  podAnnotations: {}
+  additionalContainers: []
+  initContainers:
+    # Related issue: https://github.com/containous/traefik/issues/6972
+    - name: volume-permissions
+      image: busybox:1.31.1
+      command: ["sh", "-c", "chmod -Rv 600 /certs/*"]
+      volumeMounts:
+        - name: data
+          mountPath: /certs
+ports:
+  web:
+    redirectTo: websecure
+env:
+  - name: CF_DNS_API_TOKEN # or CF_API_KEY, see for more details - https://doc.traefik.io/traefik/https/acme/#providers
+    valueFrom:
+      secretKeyRef:
+        key: apiKey
+        name: cloudflare-apikey-secret
+ingressRoute:
+  dashboard:
+    enabled: false
+persistence:
+  enabled: true
+  accessMode: ReadWriteOnce
+  size: 128Mi
+  existingClaim: acme-json-certs
+  path: /certs
+volumes:
+  - mountPath: /data
+    name: traefik-config
+    type: configMap
+providers:
+  kubernetesCRD:
+    ingressClass: "traefik-external"
+    enabled: true
+    namespaces: []
+  kubernetesIngress:
+    enabled: true
+    namespaces: []
+    publishedService:
+      enabled: true
+rbac:
+  enabled: true
+
+service:
+  enabled: true
+  type: LoadBalancer
+  annotations: {}
+  labels: {}
+  spec:
+    loadBalancerIP: "192.168.100.240" # this should be your Metal LB IP
+  loadBalancerSourceRanges: []
+  externalIPs: []

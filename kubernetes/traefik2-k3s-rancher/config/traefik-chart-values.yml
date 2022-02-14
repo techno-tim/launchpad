@@ -1,0 +1,112 @@
+# https://traefik.io/blog/install-and-configure-traefik-with-helm/
+# see https://doc.traefik.io/traefik/https/acme/#providers
+# https://github.com/traefik/traefik-helm-chart/blob/master/traefik/values.yaml
+additionalArguments:
+  - --providers.file.filename=/data/traefik-config.yaml
+  - --entrypoints.websecure.http.tls.certresolver=cloudflare
+  - --entrypoints.websecure.http.tls.domains[0].main=example.com
+  - --entrypoints.websecure.http.tls.domains[0].sans=*.example.com
+  - --certificatesresolvers.cloudflare.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
+  # comment the line above when going to production
+  - --certificatesresolvers.cloudflare.acme.dnschallenge.provider=cloudflare
+  - --certificatesresolvers.cloudflare.acme.dnschallenge.resolvers=1.1.1.1:53,8.8.8.8:53
+  - --certificatesresolvers.cloudflare.acme.storage=/certs/acme.json
+  - --serversTransport.insecureSkipVerify=true
+  # you will need to add an annotation to ingresses you create kubernetes.io/ingress.class traefik-external
+  # otherwise it will not servce those requests
+  - --providers.kubernetesingress.ingressclass=traefik-external
+  # - --log.level=DEBUG
+
+deployment:
+  enabled: true
+  # Number of pods of the deployment
+  replicas: 1
+  # Additional deployment annotations (e.g. for jaeger-operator sidecar injection)
+  annotations: {}
+  # Additional pod annotations (e.g. for mesh injection or prometheus scraping)
+  podAnnotations: {}
+  # Additional containers (e.g. for metric offloading sidecars)
+  additionalContainers: []
+  # Additional initContainers (e.g. for setting file permission as shown below)
+  initContainers:
+    # The "volume-permissions" init container is required if you run into permission issues.
+    # Related issue: https://github.com/containous/traefik/issues/6972
+    - name: volume-permissions
+      image: busybox:1.31.1
+      command: ["sh", "-c", "chmod -Rv 600 /certs/*"]
+      volumeMounts:
+        - name: data
+          mountPath: /certs
+  # Custom pod DNS policy. Apply if `hostNetwork: true`
+  # dnsPolicy: ClusterFirstWithHostNet
+
+ports:
+  web:
+    redirectTo: websecure
+env:
+  - name: CF_DNS_API_TOKEN # or CF_API_KEY, see for more details - https://doc.traefik.io/traefik/https/acme/#providers
+    valueFrom:
+      secretKeyRef:
+        key: apiKey
+        name: cloudflare-apikey-secret
+  - name: CF_API_EMAIL
+    valueFrom:
+      secretKeyRef:
+        key: email
+        name: cloudflare-apikey-secret
+ingressRoute:
+  dashboard:
+    enabled: false
+persistence:
+  enabled: true
+# make sure this claim is existed
+  existingClaim: acme-json-certs
+  accessMode: ReadWriteOnce
+  size: 128Mi
+  path: /certs
+volumes:
+  - mountPath: /data
+    name: traefik-config
+    type: configMap
+# without this, ingress get stuck on initializing
+providers:
+  kubernetesCRD:
+    enabled: true
+    namespaces: []
+  kubernetesIngress:
+    enabled: true
+    namespaces: []
+    publishedService:
+      enabled: true
+rbac:
+  enabled: true
+
+service:
+  enabled: true
+  type: LoadBalancer
+  # Additional annotations (e.g. for cloud provider specific config)
+  annotations: {}
+  # Additional service labels (e.g. for filtering Service by custom labels)
+  labels: {}
+  # Additional entries here will be added to the service spec. Cannot contains
+  # type, selector or ports entries.
+  spec:
+    # externalTrafficPolicy: Cluster
+    loadBalancerIP: "192.168.100.240" # this should be your Metal LB IP
+    # clusterIP: "2.3.4.5"
+  loadBalancerSourceRanges: []
+    # - 192.168.0.1/32
+    # - 172.16.0.0/16
+  externalIPs: []
+    # - 1.2.3.4
+    
+# securityContext:
+#   capabilities:
+#     drop: [ALL]
+#   readOnlyRootFilesystem: false
+#   runAsGroup: 65532
+#   runAsNonRoot: true
+#   runAsUser: 65532
+
+# podSecurityContext:
+#   fsGroup: 65532

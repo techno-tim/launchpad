@@ -1,0 +1,12 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: example-workload
+spec:
+  selector:
+    app: example-workload
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80

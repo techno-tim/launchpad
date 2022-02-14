@@ -1,4 +1,4 @@
-# crowdsec + traefik
+# webnut
 
 Dcoumentation [here](https://docs.technotim.live/posts/NUT-server-guide/)
 

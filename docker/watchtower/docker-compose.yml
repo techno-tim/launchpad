@@ -1,0 +1,23 @@
+---
+version: "3.1"
+
+services:
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    environment:
+    # with discord notifications
+    # uses slack config for discord
+    # replace webhook with your discord webhook, make sure to include the /slack
+      - WATCHTOWER_NOTIFICATIONS=slack
+      - WATCHTOWER_NOTIFICATION_SLACK_HOOK_URL=https://discord.com/api/webhooks/SOME_WEBHOOK_PATH/slack
+      - WATCHTOWER_NOTIFICATION_SLACK_IDENTIFIER=server-name
+      - WATCHTOWER_NOTIFICATION_SLACK_ICON_EMOJI=`:whale:`
+      - TZ=America/Chicago
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_POLL_INTERVAL=3600
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true

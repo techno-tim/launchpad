@@ -1,0 +1,25 @@
+---
+version: '3.4'
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    hostname: mongodb
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=some-password
+      - TZ=America/Chicago
+      - MONGO_REPLICA_SET_NAME=rs0 #remove if you don't want to create a replica
+    volumes:
+      - ./mongodb/data/configdb:/data/configdb
+      - ./mongodb/data/db:/data/db
+    ports:
+      - 27017:27017
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: test $$(echo "rs.initiate().ok || rs.status().ok" | mongo -u root -p some-password --quiet) -eq 1
+      interval: 10s
+      start_period: 30s
+    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]

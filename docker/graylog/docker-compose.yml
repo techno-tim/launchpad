@@ -1,0 +1,72 @@
+version: '3'
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2
+    volumes:
+      - ./elasticsearch/data:/usr/share/elasticsearch/data
+    environment:
+      - http.host=0.0.0.0
+      - transport.host=localhost
+      - network.host=0.0.0.0
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    deploy:
+      resources:
+        limits:
+          memory: 1g
+    networks:
+      - graylog
+    restart: unless-stopped
+  # Graylog: https://hub.docker.com/r/graylog/graylog/
+  graylog:
+    image: graylog/graylog:4.1.1
+    volumes:
+      - ./graylog/data:/usr/share/graylog/data
+      - ./graylog/config:/usr/share/graylog/data/config
+    environment:
+      # CHANGE ME (must be at least 16 characters)!
+      - GRAYLOG_PASSWORD_SECRET=some-password
+      # Password: admin
+      - GRAYLOG_ROOT_PASSWORD_SHA2=some-password-sha
+      - GRAYLOG_HTTP_EXTERNAL_URI=https://graylog.local.example.com/
+      - GRAYLOG_MONGODB_URI= mongodb://root:some-password@database.local.example.com:27017/graylog?authSource=admin
+    entrypoint: /usr/bin/tini -- wait-for-it elasticsearch:9200 --  /docker-entrypoint.sh
+    networks:
+      - graylog
+      - proxy
+    labels:
+    # if not using traefik, comment this out
+      - "traefik.enable=true"
+      - "traefik.http.routers.graylog.entrypoints=http"
+      - "traefik.http.routers.graylog.rule=Host(`graylog.local.example.com`)"
+      - "traefik.http.middlewares.graylog-https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.routers.graylog.middlewares=graylog-https-redirect"
+      - "traefik.http.routers.graylog-secure.entrypoints=https"
+      - "traefik.http.routers.graylog-secure.rule=Host(`graylog.local.example.com`)"
+      - "traefik.http.routers.graylog-secure.tls=true"
+      - "traefik.http.routers.graylog-secure.service=graylog"
+      - "traefik.http.services.graylog.loadbalancer.server.port=9000"
+      - "traefik.docker.network=proxy"
+    restart: unless-stopped
+    depends_on:
+    #   - mongo
+      - elasticsearch
+    ports:
+      # Graylog web interface and REST API
+      - 9000:9000
+      # Syslog TCP
+      - 1514:1514
+      # Syslog UDP
+      - 1514:1514/udp
+      # GELF TCP
+      - 12201:12201
+      # GELF UDP
+      - 12201:12201/udp
+networks:
+  graylog:
+    driver: bridge
+  proxy:
+    external: true

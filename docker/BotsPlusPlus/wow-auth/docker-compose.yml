@@ -1,0 +1,17 @@
+---
+version: "3"
+services:
+    wow-auth:
+        image: timothystewart6/botsplusplus-authserver:latest
+        container_name: wow-auth
+        environment:
+            - DB_HOST=database.local.example.com
+            - DB_PORT=33307
+        volumes:
+            - ./wow-auth/opt/trinitycore/etc:/opt/trinitycore/etc/
+            - ./wow-auth/opt/trinitycore/logs:/opt/trinitycore/logs/
+        ports:
+            - 3724:3724
+        restart: unless-stopped
+        security_opt:
+            - no-new-privileges:true

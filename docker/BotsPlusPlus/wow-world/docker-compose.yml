@@ -1,0 +1,22 @@
+---
+version: "3"
+services:
+  wow-world:
+    image: timothystewart6/botsplusplus-worldserver:latest
+    container_name: wow-world
+    environment:
+      - DB_HOST=database.local.example.com
+      - DB_PORT=33307
+    volumes:
+      - ./wow-world/opt/trinitycore/etc:/opt/trinitycore/etc/
+      - ./wow-world/opt/trinitycore/bin/cameras:/opt/trinitycore/bin/cameras
+      - ./wow-world/opt/trinitycore/bin/dbc:/opt/trinitycore/bin/dbc
+      - ./wow-world/opt/trinitycore/bin/maps:/opt/trinitycore/bin/maps
+      - ./wow-world/opt/trinitycore/bin/mmaps:/opt/trinitycore/bin/mmaps
+      - ./wow-world/opt/trinitycore/bin/vmaps:/opt/trinitycore/bin/vmaps
+      - ./wow-world/opt/trinitycore/logs:/opt/trinitycore/logs/
+    ports:
+      - 8085:8085 
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true

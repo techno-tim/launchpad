@@ -7,7 +7,7 @@ services:
   loki:
     image: grafana/loki:2.4.0
     volumes:
-      - /home/serveradmin/docker_volumes/loki:/etc/loki
+      - ./loki:/etc/loki
     ports:
       - "3100:3100"
     restart: unless-stopped
@@ -19,7 +19,7 @@ services:
     image: grafana/promtail:2.4.0
     volumes:
       - /var/log:/var/log
-      - /home/serveradmin/docker_volumes/promtail:/etc/promtail
+      - ./promtail:/etc/promtail
     restart: unless-stopped
     command: -config.file=/etc/promtail/promtail-config.yml
     networks:
@@ -29,7 +29,7 @@ services:
     image: grafana/grafana:latest
     user: "1000"
     volumes:
-    - /home/serveradmin/docker_volumes/grafana:/var/lib/grafana
+    - ./grafana:/var/lib/grafana
     ports:
       - "4090:3000" #you might need to change this
     restart: unless-stopped

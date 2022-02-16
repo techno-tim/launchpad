@@ -1,0 +1,12 @@
+---
+version: "3.1"
+
+services:
+  ntp:
+    image: cturra/ntp:latest
+    container_name: ntp
+    environment:
+      - NTP_SERVERS=time.cloudflare.com # be sure this is external
+    restart: unless-stopped
+    ports:
+      - "123:123/udp"

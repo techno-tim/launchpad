@@ -1,0 +1,14 @@
+---
+version: "3.1"
+services:
+  gitlab-runner:
+    image: gitlab/gitlab-runner:latest
+    container_name: gitlab-runner
+    environment:
+      - TZ=America/Chicago
+    volumes:
+      - ./gitlab-runner:/etc/gitlab-runner
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true

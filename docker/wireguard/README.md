@@ -1,4 +1,4 @@
-# ireguard
+# wireguard
 
 Dcoumentation [here](https://docs.technotim.live/posts/wiregaurd-setup/)
 

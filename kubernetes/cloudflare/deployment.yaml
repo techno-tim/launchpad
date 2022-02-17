@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudflare
+spec:
+  selector:
+    matchLabels:
+      app: cloudflare
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: cloudflare
+    spec:
+      containers:
+      - name: cloudflare
+        image: oznu/cloudflare-ddns
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits: 
+            memory: "128Mi"
+            cpu: "250m" 
+        env:
+          - name: API_KEY
+            value: some-api-key
+          - name: DNS_SERVER
+            value: 1.1.1.1
+          - name: PROXIED
+            value: "true"
+          - name: ZONE
+            value: example.com

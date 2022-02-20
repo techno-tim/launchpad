@@ -1,0 +1,39 @@
+- name: Install Docker engine
+  hosts: "*"
+  become: yes
+  tasks:
+  - name: install depdencies
+    apt:
+      name: 
+       - ca-certificates 
+       - curl 
+       - gnupg 
+       - lsb-release
+      state: present
+      update_cache: true
+    become: true
+
+  - name: add GPG key
+    apt_key:
+      url: https://download.docker.com/linux/ubuntu/gpg
+      state: present
+
+  - name: add docker repository to apt
+    apt_repository:
+      filename: docker 
+      repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+      state: present
+
+  - name: install docker engine
+    apt:
+      name: 
+        - docker-ce 
+        - docker-ce-cli 
+        - containerd.io
+      state: present
+      update_cache: true
+    become: true
+
+  - name: test docker
+    command: docker info
+    become: true

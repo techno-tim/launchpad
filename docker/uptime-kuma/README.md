@@ -1,4 +1,4 @@
-# pi hole
+# Uptime Kuma
 
 Dcoumentation [here](https://docs.technotim.live/posts/uptime-kuma/)
 

@@ -1,0 +1,10 @@
+node_modules
+coverage
+npm-debug.log
+.DS_Store
+yarn-error.log
+.idea
+.vscode
+.yarn-cache
+
+**/password.txt

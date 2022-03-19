@@ -1,6 +1,6 @@
 - name: Install Docker engine
   hosts: "*"
-  become: yes
+  become: true
   tasks:
   - name: install depdencies
     apt:

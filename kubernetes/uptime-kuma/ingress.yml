@@ -1,0 +1,15 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: uptime-kuma-ingress
+  annotations: 
+    kubernetes.io/ingress.class: traefik-internal 
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`uptime.local.example.com`)
+      kind: Rule
+      services:
+        - name: uptime-kuma
+          port: 3001

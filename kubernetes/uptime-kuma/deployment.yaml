@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: uptime-kuma
+spec:
+  selector:
+    matchLabels:
+      app: uptime-kuma
+  replicas: 1
+  progressDeadlineSeconds: 600
+  revisionHistoryLimit: 2
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: uptime-kuma
+    spec:
+      containers:
+      - name: uptime-kuma
+        image: louislam/uptime-kuma:1-alpine
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+            
+          limits: 
+            memory: "512Mi"
+            cpu: "250m" 
+        env:
+        - name: UPTIME_KUMA_PORT
+          value: "3001"
+        ports: 
+          - containerPort: 3001
+        volumeMounts:
+        - mountPath: /app/data
+          name: uptime-kuma-content
+      volumes:
+      - name: uptime-kuma-content
+        persistentVolumeClaim:
+          claimName:  uptime-kuma-claim
+        

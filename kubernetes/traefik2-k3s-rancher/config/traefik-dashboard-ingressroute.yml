@@ -6,7 +6,7 @@ metadata:
   namespace: kube-system
 spec:
   entryPoints:
-    - web
+    - websecure
   routes:
     - match: Host(`traefik.example.com`) && (PathPrefix(`/dashboard`) || PathPrefix(`/api`))
       kind: Rule

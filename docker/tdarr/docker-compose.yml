@@ -1,0 +1,38 @@
+---
+version: "3.4"
+services:
+  tdarr:
+    container_name: tdarr
+    image: ghcr.io/haveagitgat/tdarr:latest
+    restart: unless-stopped
+    network_mode: bridge
+    ports:
+      - 8265:8265 # webUI port
+      - 8266:8266 # server port
+      - 8267:8267 # Internal node port
+    environment:
+      - TZ=America/Chicago
+      - PUID=1000
+      - PGID=1000
+      - UMASK_SET=002
+      - serverIP=0.0.0.0
+      - serverPort=8266
+      - webUIPort=8265
+      - internalNode=true
+      - nodeID=MyInternalNode
+      - nodeIP=0.0.0.0
+      - nodePort=8267
+      - NVIDIA_DRIVER_CAPABILITIES=all
+      - NVIDIA_VISIBLE_DEVICES=all
+    volumes:
+      - /path/to/server:/app/server
+      - /path/to/configs:/app/configs
+      - /path/to/logs:/app/logs
+      - /path/to/media/:/media
+      - /path/to/temp/:/temp
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities:
+              - gpu

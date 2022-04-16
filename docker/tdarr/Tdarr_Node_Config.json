@@ -1,0 +1,22 @@
+{
+    "nodeID": "Windows-Node",
+    "nodeIP": "192.168.0.100",
+    "nodePort": "8267",
+    "serverIP": "192.168.0.101",
+    "serverPort": "8266",
+    "handbrakePath": "",
+    "ffmpegPath": "",
+    "mkvpropeditPath": "",
+    "pathTranslators": [
+      {
+        "server": "/media/",
+        "node": "C:/media"
+      },
+      {
+        "server": "/temp",
+        "node": "C:/temp"
+      }
+    ],
+    "platform_arch": "win32_x64_docker_false",
+    "logLevel": "INFO"
+  }

@@ -1,0 +1,15 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: gameserver-node-01-ingress
+  annotations: 
+    kubernetes.io/ingress.class: traefik-internal 
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`gameserver-node-01.example.com`) # ip or dns your game server running wings
+      kind: Rule
+      services:
+        - name: gameserver-node-01
+          port: 80

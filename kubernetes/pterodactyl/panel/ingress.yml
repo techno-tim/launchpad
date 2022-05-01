@@ -1,0 +1,15 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: pterodactyl-ingress
+  # annotations: 
+  #   kubernetes.io/ingress.class: traefik-internal # uncomment if you use annotations
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`pterodactyl.example.com`) # ip of your game panel
+      kind: Rule
+      services:
+        - name: pterodactyl
+          port: 80

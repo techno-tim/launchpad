@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextcloud
+spec:
+  selector:
+    matchLabels:
+      app: nextcloud
+  replicas: 1
+  progressDeadlineSeconds: 600
+  revisionHistoryLimit: 2
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: nextcloud
+    spec:
+      containers:
+      - name: nextcloud
+        image: nextcloud
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+        env:
+          - name: TZ
+            value: "${TIMEZONE}"
+        ports: 
+        - containerPort: 80
+        volumeMounts:
+        - mountPath: /var/www/html
+          name: nextcloud-html
+        - mountPath: /var/www/html/custom_apps
+          name: nextcloud-custom-apps
+        - mountPath: var/www/html/config
+          name: nextcloud-config
+        - mountPath: /var/www/html/data
+          name: nextcloud-data
+        - mountPath: /var/www/html/themes/
+          name: nextcloud-themes
+      volumes:
+      - name: nextcloud-html
+        persistentVolumeClaim:
+          claimName:  nextcloud-html-claim
+      - name: nextcloud-custom-apps
+        persistentVolumeClaim:
+          claimName:  nextcloud-custom-apps-claim
+      - name: nextcloud-config
+        persistentVolumeClaim:
+          claimName:  nextcloud-config-claim
+      - name: nextcloud-data
+        persistentVolumeClaim:
+          claimName:  nextcloud-data-claim
+      - name: nextcloud-themes
+        persistentVolumeClaim:
+          claimName:  nextcloud-themes-claim
+      securityContext:
+        runAsUser: 1000
+        fsGroup: 1000

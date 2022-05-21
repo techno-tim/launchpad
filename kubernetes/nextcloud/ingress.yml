@@ -1,0 +1,15 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: nextcloud-ingress
+  annotations: 
+    kubernetes.io/ingress.class: traefik 
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`nextcloud.example.com`)
+      kind: Rule
+      services:
+        - name: nextcloud
+          port: 80

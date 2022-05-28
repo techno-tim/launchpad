@@ -1,38 +1,3 @@
-node_modules
-coverage
-dist
-.idea
-.vscode
-npm-debug.log
-.tmp
-.DS_Store
-yarn-error.log
-temp
-public
-.log
-docs
-.nyc_output
-cassettes
-
-# hidden files
-.*
-!.git*
-!.editorconfig
-!.nojekyll
-!.travis.yml
-
-# bundler cache
-_site
-vendor
-
-# rubygem
-*.gem
-
-# npm dependencies
-node_modules
-package-lock.json
-
-
 # Trash
 .DS_Store
 Thumbs.db

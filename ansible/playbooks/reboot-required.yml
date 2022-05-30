@@ -1,0 +1,10 @@
+- name: Check if restart is required
+  hosts: all
+  tasks:
+    - name: Check that the reboot-required exists
+      stat:
+        path: /var/run/reboot-required
+      register: p
+    - debug:
+        msg: "Reboot required"
+      when: p.stat.exists

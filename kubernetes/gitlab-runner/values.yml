@@ -323,7 +323,7 @@ runners:
   ## ref: https://kubernetes.io/docs/concepts/configuration/secret/
 
   cache:
-    secretName: gtilabrunner-s3access
+    secretName: gitlabrunner-s3access
     ## General settings
     ## DEPRECATED: See https://docs.gitlab.com/runner/install/kubernetes.html#additional-configuration and https://docs.gitlab.com/runner/install/kubernetes.html#using-cache-with-configuration-template
     # cacheType: s3

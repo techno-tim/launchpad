@@ -9,7 +9,7 @@ services:
     # depends_on:  #uncomment if running traefik in the same compose file
     #   - 'traefik'
     volumes:
-      - ./config/acquis.yaml:/etc/crowdsec/acquis.yaml
+      - ./config/acquis.yml:/etc/crowdsec/acquis.yml
       - crowdsec-db:/var/lib/crowdsec/data/
       - crowdsec-config:/etc/crowdsec/
       - traefik_traefik-logs:/var/log/traefik/:ro

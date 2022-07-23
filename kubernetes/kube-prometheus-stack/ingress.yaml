@@ -1,0 +1,24 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: grafana-ingress
+  namespace: monitoring
+  annotations: 
+    kubernetes.io/ingress.class: traefik-internal 
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`grafana.example.com`)
+      kind: Rule
+      services:
+        - name: grafana
+          port: 80
+          sticky:
+            cookie:
+              httpOnly: true
+              name: grafana
+              secure: true
+              sameSite: none
+  tls:
+    secretName: your-tls-secret

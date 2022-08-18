@@ -21,3 +21,8 @@ Created by [TechnoTim](https://technotim.live) and updated by the community with
 ► Discord https://l.technotim.live/discord
 
 ► GitHub https://github.com/timothystewart6
+
+
+### Infrastructure model
+
+![Infrastructure model](.infragenie/infrastructure_model.png)

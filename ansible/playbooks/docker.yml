@@ -2,7 +2,7 @@
   hosts: "*"
   become: true
   tasks:
-  - name: install depdencies
+  - name: install dependencies
     apt:
       name: 
        - ca-certificates 

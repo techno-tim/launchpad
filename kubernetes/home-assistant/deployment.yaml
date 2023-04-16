@@ -1,0 +1,56 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: home-assistant
+  namespace: default
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  selector:
+    matchLabels:
+      app: home-assistant
+  replicas: 1
+  progressDeadlineSeconds: 600
+  revisionHistoryLimit: 2
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: home-assistant
+      annotations:
+        deploy-date: "deploy-date-value"
+    spec:
+      containers:
+        - name: home-assistant
+          image: homeassistant/home-assistant:2023.4
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 8123
+          env:
+            - name: TZ
+              value: "${TIMEZONE}"
+          volumeMounts:
+            - mountPath: /config
+              name: home-assistant-content
+      volumes:
+        - name: home-assistant-content
+          persistentVolumeClaim:
+            claimName: home-assistant-claim
+      affinity:  # this ensures it runs on IoT nodes.  Remove, you probably don't need this
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: network
+                    operator: In
+                    values:
+                      - iot
+      hostNetwork: true

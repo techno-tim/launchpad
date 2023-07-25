@@ -15,7 +15,7 @@ http:
       rule: "Host(`pihole.local.example.com`)"
       middlewares:
         - default-headers
-        - addprefix-pihole
+        - pihole-redirect
       tls: {}
       service: pihole
     homebridge:

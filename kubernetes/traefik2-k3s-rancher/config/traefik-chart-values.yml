@@ -42,7 +42,8 @@ deployment:
 
 ports:
   web:
-    redirectTo: websecure
+    redirectTo:
+      port: websecure
 env:
   - name: CF_DNS_API_TOKEN # or CF_API_KEY, see for more details - https://doc.traefik.io/traefik/https/acme/#providers
     valueFrom:

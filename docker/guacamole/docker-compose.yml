@@ -1,10 +1,13 @@
 version: "3.1"
 services:
   guacamole:
-    image: maxwaldorf/guacamole #oznum is deprecated
+    image: flcontainers/guacamole
     container_name: guacamole
+    environment:
+      TZ: 'UTC'
     volumes:
       - postgres:/config
+      - /etc/localtime:/etc/localtime:ro
     ports:
       - 8080:8080
 volumes:

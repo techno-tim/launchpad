@@ -21,7 +21,7 @@
   - name: add docker repository to apt
     apt_repository:
       filename: docker 
-      repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+      repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu jammy stable
       state: present
 
   - name: install docker engine

@@ -8,3 +8,4 @@ node {
       sh "${scannerHome}/sonar-scanner-5.0.1.3006-linux/bin/sonar-scanner"
     }
   }
+}

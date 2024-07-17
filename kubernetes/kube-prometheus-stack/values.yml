@@ -176,6 +176,8 @@ prometheus:
     retention: 6h
     enableAdminAPI: true
     walCompression: true
+    scrapeInterval: 30s
+    evaluationInterval: 30s
 
 thanosRuler:
   enabled: false

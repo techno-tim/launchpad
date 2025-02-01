@@ -16,9 +16,10 @@ deployment:
 
 ports:
   web:
-    redirectTo:
-      port: websecure
-      priority: 10
+    redirections:
+      entrypoint:
+        to: websecure
+        priority: 10
   websecure:
     http3:
       enabled: true
